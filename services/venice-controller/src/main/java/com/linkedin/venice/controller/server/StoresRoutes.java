@@ -46,6 +46,7 @@ import static com.linkedin.venice.controllerapi.ControllerRoute.GET_REPUSH_INFO;
 import static com.linkedin.venice.controllerapi.ControllerRoute.GET_STALE_STORES_IN_CLUSTER;
 import static com.linkedin.venice.controllerapi.ControllerRoute.GET_STORES_FOR_COMPACTION;
 import static com.linkedin.venice.controllerapi.ControllerRoute.GET_STORES_IN_CLUSTER;
+import static com.linkedin.venice.controllerapi.ControllerRoute.GET_STORE_LARGEST_USED_VERSION;
 import static com.linkedin.venice.controllerapi.ControllerRoute.LIST_STORES;
 import static com.linkedin.venice.controllerapi.ControllerRoute.LIST_STORE_PUSH_INFO;
 import static com.linkedin.venice.controllerapi.ControllerRoute.MIGRATE_STORE;
@@ -1006,7 +1007,7 @@ public class StoresRoutes extends AbstractRoute {
     return new VeniceRouteHandler<VersionResponse>(VersionResponse.class) {
       @Override
       public void internalHandle(Request request, VersionResponse veniceResponse) {
-        AdminSparkServer.validateParams(request, GET_STORES_IN_CLUSTER.getParams(), admin);
+        AdminSparkServer.validateParams(request, GET_STORE_LARGEST_USED_VERSION.getParams(), admin);
         String cluster = request.queryParams(CLUSTER);
         String storeName = request.queryParams(STORE_NAME);
         veniceResponse.setVersion(admin.getLargestUsedVersionFromStoreGraveyard(cluster, storeName));
