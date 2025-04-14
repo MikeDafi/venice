@@ -696,7 +696,7 @@ public class VeniceHelixAdmin implements Admin, StoreCleaner {
               ParticipantMessageKey.getClassSchema()));
     }
 
-    if (isParent() && multiClusterConfigs.isDeadStoreEndpointEnabled()) {
+    if (isLeaderControllerFor(clusterName) && multiClusterConfigs.isDeadStoreEndpointEnabled()) {
       Class<? extends DeadStoreStats> deadStoreStatsClass =
           ReflectUtils.loadClass(multiClusterConfigs.getDeadStoreStatsClassName());
       try {

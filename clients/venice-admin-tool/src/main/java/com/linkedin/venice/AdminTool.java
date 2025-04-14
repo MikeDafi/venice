@@ -507,6 +507,8 @@ public class AdminTool {
         case REPUSH_STORE:
           repushStore(cmd);
           break;
+        case GET_DEAD_STORES:
+          getDeadStores(cmd);
         case COMPARE_STORE:
           compareStore(cmd);
           break;
@@ -2825,6 +2827,19 @@ public class AdminTool {
   private static void repushStore(CommandLine cmd) {
     String storeName = getRequiredArgument(cmd, Arg.STORE);
     RepushJobResponse response = controllerClient.repushStore(storeName);
+    printObject(response);
+  }
+
+  private static void getDeadStores(CommandLine cmd) {
+    String clusterName = getOptionalArgument(cmd, Arg.CLUSTER);
+    String storeName = getOptionalArgument(cmd, Arg.STORE);
+
+    // At least one must not be empty
+    if ((clusterName == null || clusterName.isEmpty()) && (storeName == null || storeName.isEmpty())) {
+      throw new IllegalArgumentException("You must specify at least one of --cluster or --store");
+    }
+    boolean includeSystemStores = Boolean.parseBoolean(getOptionalArgument(cmd, Arg.INCLUDE_SYSTEM_STORES));
+    MultiStoreInfoResponse response = controllerClient.getDeadStores(clusterName, storeName, includeSystemStores);
     printObject(response);
   }
 
