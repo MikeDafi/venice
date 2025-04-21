@@ -696,7 +696,7 @@ public class VeniceHelixAdmin implements Admin, StoreCleaner {
               ParticipantMessageKey.getClassSchema()));
     }
 
-    if (multiClusterConfigs.isDeadStoreEndpointEnabled()) {
+    if (multiClusterConfigs.isDeadStoreEndpointEnabled(controllerClusterName)) {
       Class<? extends DeadStoreStats> deadStoreStatsClass =
           ReflectUtils.loadClass(multiClusterConfigs.getDeadStoreStatsClassName());
       try {
@@ -858,7 +858,8 @@ public class VeniceHelixAdmin implements Admin, StoreCleaner {
 
     // for refreshing the instance config list if the controller is already a participant in venice-controller cluster
     // but assigned to another venice cluster
-    tempManager.addPreConnectCallback(new ControllerInstanceTagRefresher(tempManager, multiClusterConfigs));
+    tempManager.addPreConnectCallback(
+        new ControllerInstanceTagRefresher(tempManager, multiClusterConfigs.getControllerInstanceTagList()));
     StateMachineEngine stateMachine = tempManager.getStateMachineEngine();
     stateMachine.registerStateModelFactory(LeaderStandbySMD.name, controllerStateModelFactory);
     try {
@@ -7163,7 +7164,7 @@ public class VeniceHelixAdmin implements Admin, StoreCleaner {
       if (nodeRemovableResult.isRemovable()) {
         stoppableInstances.add(nodeRemovableResult.getInstanceId());
       } else {
-        nonStoppableInstances.put(nodeRemovableResult.getInstanceId(), nodeRemovableResult.getBlockingReason());
+        nonStoppableInstances.put(nodeRemovableResult.getInstanceId(), nodeRemovableResult.getFormattedMessage());
       }
     }
     return statuses;
@@ -8269,7 +8270,7 @@ public class VeniceHelixAdmin implements Admin, StoreCleaner {
   @Override
   public List<StoreInfo> getDeadStores(String clusterName, String storeName, boolean includeSystemStores) {
     checkControllerLeadershipFor(clusterName);
-    if (!multiClusterConfigs.isDeadStoreEndpointEnabled()) {
+    if (!multiClusterConfigs.isDeadStoreEndpointEnabled(clusterName)) {
       throw new VeniceUnsupportedOperationException("Dead store stats is not enabled.");
     }
 
