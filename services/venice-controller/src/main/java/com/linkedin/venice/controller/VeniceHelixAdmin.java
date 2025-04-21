@@ -696,7 +696,7 @@ public class VeniceHelixAdmin implements Admin, StoreCleaner {
               ParticipantMessageKey.getClassSchema()));
     }
 
-    if (multiClusterConfigs.isDeadStoreEndpointEnabled(controllerClusterName)) {
+    if (multiClusterConfigs.isDeadStoreEndpointEnabled()) {
       Class<? extends DeadStoreStats> deadStoreStatsClass =
           ReflectUtils.loadClass(multiClusterConfigs.getDeadStoreStatsClassName());
       try {
@@ -8270,7 +8270,7 @@ public class VeniceHelixAdmin implements Admin, StoreCleaner {
   @Override
   public List<StoreInfo> getDeadStores(String clusterName, String storeName, boolean includeSystemStores) {
     checkControllerLeadershipFor(clusterName);
-    if (!multiClusterConfigs.isDeadStoreEndpointEnabled(clusterName)) {
+    if (!multiClusterConfigs.isDeadStoreEndpointEnabled()) {
       throw new VeniceUnsupportedOperationException("Dead store stats is not enabled.");
     }
 
